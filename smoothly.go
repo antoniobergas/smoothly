@@ -3,13 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
 	"log"
+	"os"
 )
 
 func main() {
 
 	init := flag.Bool("init", false, "Initialize a main structure")
+	version := flag.Bool("version", false, "Outputs Smoothly version")
 
 	flag.Parse()
 
@@ -21,6 +22,10 @@ func main() {
 		}
 		fmt.Println("File created successfully")
 		defer file.Close()
+	}
+
+	if *version {
+		fmt.Println("1.0.0")
 	}
 
 }
