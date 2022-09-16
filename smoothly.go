@@ -14,6 +14,7 @@ var install bool
 var version bool
 var start bool
 var run bool
+var clean bool
 
 type Dockerfile struct {
 	Message string
@@ -28,6 +29,7 @@ func init() {
 	flag.BoolVar(&version, "version", false, "Outputs Smoothly version")
 	flag.BoolVar(&run, "run", false, "Runs the solution locally with docker")
 	flag.BoolVar(&start, "start", false, "Runs the solution locally with docker")
+	flag.BoolVar(&clean, "clean", false, "Clean the install")
 }
 
 func createFromTemplate[T any](fileName string, data T) {
@@ -66,6 +68,13 @@ func runSolution() {
 	}
 }
 
+func runClean() {
+     e := os.Remove("docker-compose.yml", "Dockerfile")
+    if e != nil {
+        log.Fatal(e)
+    }
+}
+
 func main() {
 
 	flag.Parse()
@@ -85,5 +94,9 @@ func main() {
 
 	if run {
 		runSolution()
+	}
+
+	if clean {
+		runClean()
 	}
 }
