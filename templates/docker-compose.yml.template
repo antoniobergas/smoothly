@@ -1,0 +1,6 @@
+services:
+  app:
+    image: {{.AppName}}-image
+    container_name: {{.AppName}}-container
+    ports:
+      - "8080:80"

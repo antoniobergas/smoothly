@@ -15,13 +15,15 @@ var version bool
 var start bool
 var run bool
 var clean bool
+var dockerImageData DockerImage
+var dockerComposeData DockerCompose
 
-type Dockerfile struct {
-	Message string
+type DockerImage struct {
+	Version string
 }
 
 type DockerCompose struct {
-	Message string
+	AppName string
 }
 
 func init() {
@@ -30,13 +32,15 @@ func init() {
 	flag.BoolVar(&run, "run", false, "Runs the solution locally with docker")
 	flag.BoolVar(&start, "start", false, "Runs the solution locally with docker")
 	flag.BoolVar(&clean, "clean", false, "Clean the install")
+	dockerImageData = DockerImage{Version: "18"}
+	dockerComposeData = DockerCompose{AppName: "your-app"}
 }
 
 func createFromTemplate[T any](fileName string, data T) {
 
 	var content bytes.Buffer
 
-	tmpl, err := template.ParseFiles(fileName + ".template")
+	tmpl, err := template.ParseFiles("templates/" + fileName + ".template")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -46,26 +50,33 @@ func createFromTemplate[T any](fileName string, data T) {
 		log.Fatalln(err)
 	}
 
-	os.WriteFile(fileName, content.Bytes(), 0644)
+	os.WriteFile("test-app/" + fileName, content.Bytes(), 0644)
 }
 
 func runInstall() {
 	fmt.Println("Initializing structure...")
-	dockerfileData := Dockerfile{Message: "Hello World"}
-	dockercomposeData := DockerCompose{Message: "Hello World"}
-	createFromTemplate("Dockerfile", dockerfileData)
-	createFromTemplate("docker-compose.yml", dockercomposeData)
+	createFromTemplate("Dockerfile", &dockerImageData)
+	createFromTemplate("docker-compose.yml", &dockerComposeData)
 }
 
 func runVersion() {
 	fmt.Println("1.0.0")
 }
 
-func runSolution() {
-	cmd := exec.Command("docker", "build", "-t", "your-app", ".")
-	if err := cmd.Run(); err != nil {
-		log.Fatal(err)
+func outputCmd(cmd *exec.Cmd){
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Println(fmt.Sprint(err) + ": " + string(output))
+		return
 	}
+	fmt.Println(string(output))
+}
+
+func runSolution() {
+	dockerBuild := exec.Command("docker", "build", "-t", "your-app-image", "test-app/.")
+	outputCmd(dockerBuild)
+	dockerCompose := exec.Command("docker", "compose", "-f", "test-app/docker-compose.yml","up", "-d")
+	outputCmd(dockerCompose)
 }
 
 func runClean() {
