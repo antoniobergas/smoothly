@@ -14,6 +14,7 @@ var install bool
 var version bool
 var start bool
 var run bool
+var clean bool
 var dockerImageData DockerImage
 var dockerComposeData DockerCompose
 
@@ -30,6 +31,7 @@ func init() {
 	flag.BoolVar(&version, "version", false, "Outputs Smoothly version")
 	flag.BoolVar(&run, "run", false, "Runs the solution locally with docker")
 	flag.BoolVar(&start, "start", false, "Runs the solution locally with docker")
+	flag.BoolVar(&clean, "clean", false, "Clean the install")
 	dockerImageData = DockerImage{Version: "18"}
 	dockerComposeData = DockerCompose{AppName: "your-app"}
 }
@@ -51,16 +53,6 @@ func createFromTemplate[T any](fileName string, data T) {
 	os.WriteFile("test-app/" + fileName, content.Bytes(), 0644)
 }
 
-func runInstall() {
-	fmt.Println("Initializing structure...")
-	createFromTemplate("Dockerfile", &dockerImageData)
-	createFromTemplate("docker-compose.yml", &dockerComposeData)
-}
-
-func runVersion() {
-	fmt.Println("1.0.0")
-}
-
 func outputCmd(cmd *exec.Cmd){
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -70,11 +62,38 @@ func outputCmd(cmd *exec.Cmd){
 	fmt.Println(string(output))
 }
 
+func removeFile(fileName string){
+	rm := os.Remove(fileName)
+    if rm != nil {
+        log.Fatal(rm)
+    }
+}
+
 func runSolution() {
+	fmt.Println("Running solution...")
 	dockerBuild := exec.Command("docker", "build", "-t", "your-app-image", "test-app/.")
 	outputCmd(dockerBuild)
 	dockerCompose := exec.Command("docker", "compose", "-f", "test-app/docker-compose.yml","up", "-d")
 	outputCmd(dockerCompose)
+	fmt.Println("Solution running!")
+}
+
+func runClean() {
+	fmt.Println("Cleaning structure...")
+    removeFile("test-app/Dockerfile")
+	removeFile("test-app/docker-compose.yml")
+	fmt.Println("Structure cleaned!")
+}
+
+func runInstall() {
+	fmt.Println("Initializing structure...")
+	createFromTemplate("Dockerfile", &dockerImageData)
+	createFromTemplate("docker-compose.yml", &dockerComposeData)
+	fmt.Println("Structure created!")
+}
+
+func runVersion() {
+	fmt.Println("smoothly-1.0.0")
 }
 
 func main() {
@@ -96,5 +115,9 @@ func main() {
 
 	if run {
 		runSolution()
+	}
+
+	if clean {
+		runClean()
 	}
 }
