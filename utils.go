@@ -30,23 +30,6 @@ func createFromTemplate[T any](path string, fileName string, data T) {
 	os.WriteFile(path+fileName, content.Bytes(), 0644)
 }
 
-// func createFile(content string) {
-
-// 	f, err := os.Create("test-app/smoothly.json")
-
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-
-// 	defer f.Close()
-
-// 	_, err2 := f.WriteString(content)
-
-// 	if err2 != nil {
-// 		log.Fatal(err2)
-// 	}
-// }
-
 func outputCmd(cmd *exec.Cmd) {
 	output, err := cmd.CombinedOutput()
 	if err != nil {
