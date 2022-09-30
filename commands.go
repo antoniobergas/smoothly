@@ -3,22 +3,13 @@ package main
 import (
 	"fmt"
 	"os/exec"
+	"time"
 )
 
 func runInstall() {
 	fmt.Println("Initializing structure...")
-	createFile(
-		`{
-		"options": {
-		  "path": "test-app/"
-		},
-		"dockerImage":{
-		  "version": "18"
-		},
-		"dockerCompose":{
-		  "appName": "your-app"
-		}
-	  }`)
+	createFromTemplate("test-app/", "smoothly.json", data)
+	time.Sleep(2 * time.Second)
 	getData()
 	createFromTemplate(configData.Options.Path, "Dockerfile", configData.DockerImage)
 	createFromTemplate(configData.Options.Path, "docker-compose.yml", configData.DockerCompose)
@@ -28,9 +19,9 @@ func runInstall() {
 func runSolution() {
 	getData()
 	fmt.Println("Running solution...")
-	dockerBuild := exec.Command("docker", "build", "-t", "your-app-image", configData.Options.Path + ".")
+	dockerBuild := exec.Command("docker", "build", "-t", "your-app-image", configData.Options.Path+".")
 	outputCmd(dockerBuild)
-	dockerCompose := exec.Command("docker", "compose", "-f", configData.Options.Path + "docker-compose.yml", "up", "-d")
+	dockerCompose := exec.Command("docker", "compose", "-f", configData.Options.Path+"docker-compose.yml", "up", "-d")
 	outputCmd(dockerCompose)
 	fmt.Println("Solution running!")
 }

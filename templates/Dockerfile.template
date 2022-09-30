@@ -1,4 +1,4 @@
-FROM node:{{.Version}}-alpine as build
+FROM {{.BuildBaseImage}} as build
 WORKDIR /app
 
 COPY package.json .
@@ -7,7 +7,7 @@ RUN npm i
 COPY . .
 RUN npm run build
 
-FROM nginx:alpine as final
+FROM {{.DeployBaseImage}} as final
 EXPOSE 80
 
 COPY --from=build /app /usr/local/nginx/html/

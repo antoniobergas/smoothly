@@ -1,0 +1,13 @@
+{
+    "options": {
+        "type": "{{.Type}}",
+        "path": "{{.Path}}"
+    },
+    "dockerImage":{
+        "buildBaseImage": "{{.BuildBaseImage}}",
+        "deployBaseImage": "{{.DeployBaseImage}}"
+    },
+    "dockerCompose":{
+        "appName": "{{.AppName}}"
+    }
+}

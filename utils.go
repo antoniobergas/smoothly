@@ -2,20 +2,20 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"text/template"
-	"encoding/json"
 )
 
-func getData(){
+func getData() {
 	file, _ := os.ReadFile("test-app/smoothly.json")
 	_ = json.Unmarshal([]byte(file), &configData)
 }
 
-func createFromTemplate[T any](path string, fileName string,  data T) {
+func createFromTemplate[T any](path string, fileName string, data T) {
 
 	var content bytes.Buffer
 	tmpl, err := template.ParseFiles("templates/" + fileName + ".template")
@@ -30,22 +30,22 @@ func createFromTemplate[T any](path string, fileName string,  data T) {
 	os.WriteFile(path+fileName, content.Bytes(), 0644)
 }
 
-func createFile(content string){
-	
-	f, err := os.Create("test-app/smoothly.json")
+// func createFile(content string) {
 
-    if err != nil {
-        log.Fatal(err)
-    }
+// 	f, err := os.Create("test-app/smoothly.json")
 
-    defer f.Close()
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-    _, err2 := f.WriteString(content)
+// 	defer f.Close()
 
-    if err2 != nil {
-        log.Fatal(err2)
-    }
-}
+// 	_, err2 := f.WriteString(content)
+
+// 	if err2 != nil {
+// 		log.Fatal(err2)
+// 	}
+// }
 
 func outputCmd(cmd *exec.Cmd) {
 	output, err := cmd.CombinedOutput()
