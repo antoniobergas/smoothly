@@ -1,10 +1,10 @@
 # Smoothly
-Configure and control your containerization and IaC in a simple way.  If you are a developer and you don't like to touch topics like pipelines, docker, deployments, etc... Just install smoothly and forget about it.
+Configure and control your containerization and IaC in a simple way.  If you are a developer and you don't like to struggle with pipelines, docker, deployments, etc... Just install Smoothly and forget about it.
 
 Current stack supported:
 - Angular app running in nginx (Node 18)
 
-# Dev configuration
+# Dev Configuration
 Requirements:
 - Npm
 - Angular-cli
