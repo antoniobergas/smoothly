@@ -11,8 +11,7 @@ func TestCreateFromTemplate(t *testing.T) {
 	}
 	var testData TestData
 	testData.TestField = "Test data"
-	createFromTemplate("testing/", "testfile", testData)
-
+	createFromTemplate("templates/", "testfile", testData)
 }
 
 func TestOutputCmd(t *testing.T) {
@@ -21,5 +20,5 @@ func TestOutputCmd(t *testing.T) {
 }
 
 func TestRemoveFile(t *testing.T) {
-	removeFile("testing/testfile")
+	removeFile("templates/testfile")
 }
